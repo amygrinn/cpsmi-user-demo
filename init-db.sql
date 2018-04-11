@@ -1,5 +1,3 @@
-USE `TestDb` -- replace with DB name
-
 DROP TABLE IF EXISTS `users`;
 
 CREATE TABLE `users` (
