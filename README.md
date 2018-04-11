@@ -11,8 +11,11 @@ Clone the repository
 Set relevant environment variables:
 
 ```SQL_LOCATION=<db-location>```
+
 ```SQL_USER=<db-username>```
+
 ```SQL_PASSWORD=<db-password>```
+
 ```SQL_DB_NAME=<db-name>```
 
 Initialize MySql database:
@@ -38,5 +41,5 @@ location / {
 }
 ```
 * Uncomment php and fastcgi lines in default server block with php7.0-fpm
-* Set env vars in /etc/php/7.0/fpm/pool.d/www.conf (`env[SQL_USER] = "root"`)
+* Set env vars in /etc/php/7.0/fpm/pool.d/www\.conf (`env[SQL_USER] = "root"`)
 
