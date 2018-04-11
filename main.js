@@ -1,29 +1,30 @@
-$("#search_users_form").submit(function(event) {
+$(function() {
 
-  event.preventDefault();
 
-  $.get(
-    "/api/users?" + $.param({ search: $("#search").val() }),
-    function(data) {
+  $("#search_users_form").submit(function(event) {
 
-      data = JSON.parse(data);
+    event.preventDefault()
 
-      let htmlStr = "";
+    $.get(
+      "/api/users?" + $.param({ search: $("#search").val() }),
+      function(data) {
 
-      if(data.length > 0) {
+        data = JSON.parse(data)
 
-        data.forEach( function(user) {
-          htmlStr += `<li>${user.name}, ${user.phone}, ${user.email}</li>`
-        })
+        let htmlStr = ""
 
-      } else {
-        htmlStr = "No results found";
+        if(data.length > 0) {
+
+          data.forEach( function(user) {
+            htmlStr += `<li>${user.name}, ${user.phone}, ${user.email}</li>`
+          })
+
+        } else {
+          htmlStr = "No results found"
+        }
+
+        $("#results").html(htmlStr)
       }
-
-      console.log(htmlStr);
-
-      $("#results").html(htmlStr);
-    }
-  )
-
-});
+    )
+  })
+})

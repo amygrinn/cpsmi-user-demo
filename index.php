@@ -7,85 +7,37 @@ if ( $path === "/" ) {
   exit(0);
 }
 
-class Api {
-
-  function handleRequest($path, $method, $query_params) {
-
-    // Only one endpoint: users
-    if($path[0] === "users") {
-      
-      // Only one method: get
-      if($method === "GET") {
-        return $this->getUser($query_params);
-      } 
-    }
-    
-    http_response_code(400);
-    echo "<h1>Incorrect request format</h1>";
-  }
-
-  function getUser($query) {
-    
-    $search = $query["search"] ? $query["search"] : ""; // match all users if no search string
-    
-    $sql = new mysqli(
-      $_ENV["SQL_LOCATION"], 
-      $_ENV["SQL_USER"],
-      $_ENV["SQL_PASSWORD"],
-      $_ENV["SQL_DB_NAME"]
-    );
-
-    // Check connection
-    if ($sql->connect_error) {
-      http_response_code(500);
-      echo("Connection failed: " . $sql->connect_error);
-      return;
-    }
-
-    $query_str =
-<<<EOT
-
-SELECT * 
-FROM `users`
-WHERE ( 
-  `name` like '%$search%'
-  OR `phone` like '%$search%'
-  OR `email` like '%$search%'
-);
-
-EOT;
-
-    $result = $sql->query($query_str);
-
-    if ($result->num_rows > 0) {
-      
-      // Turn sql result into json
-      $rows = array();
-      while($row = $result->fetch_assoc()) {
-        $rows[] = $row;
-      }
-
-      echo json_encode($rows);
-
-    } else {
-      // No results found
-      echo json_encode(array());
-    }
-
-
-    $sql->close();
-  }
-
-}
-
 // Split path into tokens
 $tokens = explode("/", $path);
 
 // tokens[0] should be empty
 if( $tokens[1] === "api" ) {
 
+  // Connect to mysql database
+  $location = getenv('SQL_LOCATION');
+  $dbname = getenv('SQL_DB_NAME');
+  $user = getenv('SQL_USER');
+  $password = getenv('SQL_PASSWORD');
+  
+  $sql = new PDO(
+    "mysql:host=$location;dbname=$dbname",
+    $user,
+    $password,
+    array(
+      PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
+    )
+  );
+
+  // Check connection
+  if ($sql->connect_error) {
+    http_response_code(500);
+    echo("Connection failed: " . $sql->connect_error);
+    return;
+  }
+
   // Handle API request
-  $api = new Api;
+  include 'api.php';
+  $api = new Api($sql);
 
   parse_str($_SERVER["QUERY_STRING"], $query_params);
   
@@ -95,6 +47,7 @@ if( $tokens[1] === "api" ) {
     $query_params
   );
   
+  $sql = null;
   exit(0);
 }
 
