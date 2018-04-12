@@ -1,8 +1,6 @@
 # CPSMI Users Demo
 
-## Demo
-
-cpsmi-users.tygr.info
+[Demo](http://cpsmi-users.tygr.info)
 
 ## Usage
 
