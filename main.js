@@ -1,7 +1,9 @@
 $(() => {
+  let search = $("#search");
+
   Rx.Observable
-  .fromEvent($("#search"), 'keyup')
-  .map(() => $("#search").val()) // Get search string
+  .fromEvent(search, 'keyup')
+  .map(() => search.val())
   .do(val => !val && $("#results").html("")) // If input empty, clear results list
   .pipe(Rx.operators.debounceTime(500)) // Only request users at most every 500 ms
   .pipe(Rx.operators.switchMap( // switchMap only emits values from most recent request made
@@ -9,7 +11,7 @@ $(() => {
       $.get("/api/users?" + $.param({ search })).promise() // Request users
     ))
   )
-  .filter(() => !!$("#search").val()) // Check to see if input cleared while requesting data
+  .filter(() => !!search.val()) // Check to see if input cleared while requesting data
   .map(data => JSON.parse(data))
   .subscribe(data => { // Display results
     let htmlStr = ""
