@@ -9,8 +9,8 @@ $(() => {
   .pipe(Rx.operators.switchMap( // switchMap only emits values from most recent request made
     search => Rx.Observable.fromPromise(
       $.get("/api/users?" + $.param({ search })).promise() // Request users
-    ))
-  )
+    )
+  ))
   .filter(() => !!search.val()) // Check to see if input cleared while requesting data
   .map(data => JSON.parse(data))
   .subscribe(data => { // Display results
